@@ -1,13 +1,11 @@
 'use client'
 
-// import { IBM_Plex_Sans } from 'next/font/google'
+import { styled } from '@mui/system'
 
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Button, { buttonClasses } from '@mui/base/Button'
-import { styled } from '@mui/system'
-
 import { ThemeProvider } from '../../features/theme'
 
 // const ibm = IBM_Plex_Sans({ subsets: ['latin'], weight: ['300', '500', '700'] })
@@ -15,7 +13,6 @@ import { ThemeProvider } from '../../features/theme'
 const Home = () => {
   return (
     <ThemeProvider>
-      123
       <Box
         sx={{
           p: 3,
@@ -26,7 +23,7 @@ const Home = () => {
         <Typography variant="h3" color="secondary">
           I&apos;m Home Page.
         </Typography>
-        456
+
         <Stack spacing={2} direction="row">
           <CustomButton>Button</CustomButton>
           <CustomButton disabled>Disabled</CustomButton>
