@@ -2,16 +2,47 @@
 
 import { styled } from '@mui/system'
 import Button, { buttonClasses } from '@mui/base/Button'
+import { DataGrid } from '@mui/x-data-grid'
 
 const Home = () => {
   return (
     <div className="h-screen w-full p-6">
-      <h3 className="text-5xl antialiased font-medium">I&apos;m Home Page.</h3>
+      <h3 className="text-5xl antialiased font-medium mb-4">
+        I&apos;m Home Page.
+      </h3>
 
-      <div className="flex gap-x-3">
+      <div className="flex gap-x-3 mb-4">
         <CustomButton>Button</CustomButton>
         <CustomButton disabled>Disabled</CustomButton>
       </div>
+
+      <DataGrid
+        className="bg-white"
+        aria-label="DataGrid"
+        hideFooter
+        autoHeight
+        columns={[
+          {
+            field: 'id',
+            headerName: 'ID',
+            width: 70,
+            renderCell: (params) => <span>{params.value}</span>,
+          },
+          { field: 'firstName', headerName: 'First name', width: 130 },
+          {
+            field: 'lastName',
+            headerName: 'Last name',
+            width: 130,
+          },
+          {
+            field: 'age',
+            headerName: 'Age',
+            type: 'number',
+            width: 90,
+          },
+        ]}
+        rows={[{ id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 }]}
+      />
     </div>
   )
 }
@@ -56,11 +87,6 @@ const CustomButton = styled(Button)(
   &.${buttonClasses.focusVisible} {
     box-shadow: 0 3px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 5px rgba(0, 127, 255, 0.5);
     outline: none;
-  }
-
-  &.${buttonClasses.disabled} {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
   `
 )
