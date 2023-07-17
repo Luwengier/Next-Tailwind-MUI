@@ -1,5 +1,6 @@
 import './globals.css'
 import { Inter, Roboto } from 'next/font/google'
+import Provider from './Provider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,7 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${roboto.className} ${inter.className}`}>
-      <body>{children}</body>
+      <body>
+        <Provider>{children}</Provider>
+      </body>
     </html>
   )
 }
