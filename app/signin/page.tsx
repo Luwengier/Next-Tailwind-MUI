@@ -28,7 +28,7 @@ const Signin = () => {
 
     signIn('credentials', {
       ...data,
-      callbackUrl: '/home',
+      callbackUrl: '/',
     }).then((res) => {
       setIsLoading(false)
 

@@ -1,6 +1,19 @@
 import NextAuth, { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
+interface User {
+  id: number
+  role: string
+  companyId: number
+  token: string
+}
+
+declare module 'next-auth' {
+  interface Session {
+    user: User
+  }
+}
+
 const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -16,11 +29,45 @@ const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' }
+        // const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' }
+
+        const tokenRes = await fetch(
+          process.env.API_URL + '/iso-14064/auth/login',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: 'admin@email.com',
+              password: 'rup453rup4bj4',
+            }),
+          }
+        )
+
+        const accessTokenData = await tokenRes.json()
+        const accessToken = accessTokenData?.data?.token
+
+        const userRes = await fetch(
+          process.env.API_URL + '/iso-14064/auth/jwt/user-info',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + accessToken,
+            },
+          }
+        )
+
+        const userData = await userRes.json()
+        const user = userData?.data
 
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
-          return user
+          return {
+            ...user,
+            token: accessToken,
+          }
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
           return null
@@ -30,6 +77,20 @@ const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user
+      }
+
+      return token
+    },
+    async session({ session, token }) {
+      session.user = token.user as User
+
+      return session
+    },
+  },
   pages: {
     signIn: '/signin',
   },
