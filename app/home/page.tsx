@@ -1,10 +1,42 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { styled } from '@mui/system'
-import Button, { buttonClasses } from '@mui/base/Button'
+
 import { DataGrid } from '@mui/x-data-grid'
+import { Editor, EditorState, convertFromRaw } from 'draft-js'
+import Button, { buttonClasses } from '@mui/base/Button'
+
+import 'draft-js/dist/Draft.css'
+
+const emptyContentState = convertFromRaw({
+  entityMap: {},
+  blocks: [
+    {
+      text: '',
+      key: 'foo',
+      type: 'unstyled',
+      entityRanges: [],
+      depth: 0,
+      inlineStyleRanges: [],
+    },
+  ],
+})
 
 const Home = () => {
+  const [isEditorReady, setIsEditorReady] = useState(false)
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createWithContent(emptyContentState)
+  )
+
+  useEffect(() => {
+    setIsEditorReady(true)
+  }, [editorState])
+
+  const onChange = (editorState: EditorState) => {
+    setEditorState(editorState)
+  }
+
   return (
     <div className="h-screen w-full p-6">
       <h3 className="text-5xl antialiased font-medium mb-4">
@@ -43,6 +75,12 @@ const Home = () => {
         ]}
         rows={[{ id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 }]}
       />
+
+      {isEditorReady && (
+        <div className="border border-gray-300 rounded-md p-4">
+          <Editor editorState={editorState} onChange={onChange} />
+        </div>
+      )}
     </div>
   )
 }
